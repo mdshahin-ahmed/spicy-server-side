@@ -22,10 +22,17 @@ async function run() {
         const usersCollection = database.collection('users');
         const ordersCollection = database.collection('orders');
 
-        app.get('/menus', async(req,res)=>{
+        app.get('/menus', async (req, res) => {
             const cursor = menusCollection.find({});
             const menus = await cursor.toArray();
             res.json(menus);
+        });
+
+        // products for home page 
+        app.get('/homeProducts', async (req, res) => {
+            const cursor = menusCollection.find({});
+            const products = await cursor.limit(6).toArray();
+            res.json(products);
         });
 
         app.post('/menus', async (req, res) => {
@@ -47,6 +54,9 @@ async function run() {
             res.json(result)
 
         });
+
+
+
         app.get('/menus/:id', async (req, res) => {
             const id = req.params.id;
             // console.log('loaded user', id);
@@ -69,7 +79,7 @@ async function run() {
 
         //order part
 
-        app.get('/orders', async(req,res)=>{
+        app.get('/orders', async (req, res) => {
             const cursor = ordersCollection.find({});
             const result = await cursor.toArray();
             res.json(result);
