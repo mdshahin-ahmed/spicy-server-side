@@ -21,6 +21,7 @@ async function run() {
         const menusCollection = database.collection('menus');
         const usersCollection = database.collection('users');
         const ordersCollection = database.collection('orders');
+        const reviewsCollection = database.collection('reviews');
 
         app.get('/menus', async (req, res) => {
             const cursor = menusCollection.find({});
@@ -93,6 +94,26 @@ async function run() {
             res.json(result);
         });
 
+
+        app.put('/orders/:id', async (req, res) => {
+            // console.log('hit api'); 
+            const id = req.params.id;
+            const status = req.body;
+            const approved = status.status;
+            console.log(approved);
+            const filter = {_id: ObjectId(id)};
+            const updateDoc = {
+                $set:{
+                    status: approved
+                }
+            };
+
+            const result = await ordersCollection.updateOne(filter, updateDoc)
+            res.json(result)
+        });
+
+        
+
         app.get('/userOrders', async (req, res) => {
             const email = req.query.email;
             const query = { email: email }
@@ -110,6 +131,23 @@ async function run() {
             // console.log('deleting', result);
 
             res.json(result);
+        });
+
+
+        // review part 
+
+        app.post('/reviews', async (req, res) => {
+            const review = req.body;
+            // console.log('hit api', product);            
+            const result = await reviewsCollection.insertOne(review);
+            // console.log(result);
+            res.json(result);
+        });
+
+        app.get('/reviews', async (req, res) => {
+            const cursor = reviewsCollection.find({});
+            const products = await cursor.toArray();
+            res.json(products);
         });
 
         // admin part
