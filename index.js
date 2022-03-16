@@ -77,6 +77,28 @@ async function run() {
       res.json(result);
     });
 
+    // edit Product part
+    app.put("/menus/:id", async (req, res) => {
+      const id = req.params.id;
+      const updatedProduct = req.body;
+      const filter = { _id: ObjectId(id) };
+      const options = { upsert: true };
+      const updateDoc = {
+        $set: {
+          name: updatedProduct.name,
+          price: updatedProduct.price,
+          description: updatedProduct.description,
+        },
+      };
+      const result = await menusCollection.updateOne(
+        filter,
+        updateDoc,
+        options
+      );
+      console.log("updating menu", req);
+      res.json(result);
+    });
+
     //order part
 
     app.get("/orders", async (req, res) => {
